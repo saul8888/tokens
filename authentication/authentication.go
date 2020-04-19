@@ -41,11 +41,11 @@ func init() {
 	//for load in the form of a key private and public
 	privateKey, err = jwt.ParseRSAPrivateKeyFromPEM(privateBytes)
 	if err != nil {
-		log.Fatal("no se pudo hacer el parse de privado")
+		log.Fatal("could not do the parse of private")
 	}
 	publicKey, err = jwt.ParseRSAPublicKeyFromPEM(publicBytes)
 	if err != nil {
-		log.Fatal("no se pudo hacer el parse de privado")
+		log.Fatal("could not do the parse of public")
 	}
 }
 
@@ -113,25 +113,25 @@ func ValidateToken(w http.ResponseWriter, r *http.Request) {
 			vErr := err.(*jwt.ValidationError)
 			switch vErr.Errors {
 			case jwt.ValidationErrorExpired:
-				fmt.Fprintln(w, "su token expiro")
+				fmt.Fprintln(w, "your token expired")
 				return
 			case jwt.ValidationErrorSignatureInvalid:
-				fmt.Fprintln(w, "la firma no coincide")
+				fmt.Fprintln(w, "the signature does not match")
 				return
 			default:
-				fmt.Fprintln(w, "la firma no coincide")
+				fmt.Fprintln(w, "the signature does not match")
 				return
 			}
 		default:
-			fmt.Fprintln(w, "su token no es valido")
+			fmt.Fprintln(w, "your token is not valid")
 			return
 		}
 	}
 	if token.Valid {
 		w.WriteHeader(http.StatusAccepted)
-		fmt.Fprintln(w, "bienvenido al sistema")
+		fmt.Fprintln(w, "welcome to the system")
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintln(w, "su token no es valido")
+		fmt.Fprintln(w, "your token is not valid")
 	}
 }
