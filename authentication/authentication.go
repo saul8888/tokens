@@ -69,18 +69,19 @@ func GenerateJWT(user models.User) string {
 
 }
 
-func login(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		fmt.Println("error reading user %s", err)
+		//fmt.Println("error reading user %s", err)
+		fmt.Println("error reading user")
 		return
 	}
 	if user.Name == "prueba" && user.Password == "prueba" {
 		user.Password = ""
 		user.Role = "admin"
 		token := GenerateJWT(user)
-		result := models.Responsetoken{token}
+		result := models.Responsetoken{Token: token}
 		jsonResult, err := json.Marshal(result)
 		if err != nil {
 			fmt.Println("error generating the json")
@@ -96,14 +97,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func hola(token *jwt.Token) (interface{}, error) {
-	return publicKey, nil
-}
+//func hola(token *jwt.Token) (interface{}, error) {
+//	return publicKey, nil
+//}
 
 func ValidateToken(w http.ResponseWriter, r *http.Request) {
+	//token, err := request.ParseFromRequest(r, request.OAuth2Extractor, func(token *jwt.Token) (interface{}, error) {
 	//token, err := jwt.ParseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
 	token, err := request.ParseFromRequestWithClaims(r, request.OAuth2Extractor, &models.Claim{}, func(token *jwt.Token) (interface{}, error) {
-		//return []byte(publicKey), nil
 		return publicKey, nil
 	})
 	//token, err := request.ParseFromRequestWithClaims(r, request.OAuth2Extractor, &models.Claim{}, hola)
